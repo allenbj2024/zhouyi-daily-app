@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>易学日课</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+        <div>
+          <h1>易学日课</h1>
+          <p id="todayLabel">今日</p>
+        </div>
+      </div>
+      <nav class="tabs" aria-label="主导航">
+        <button class="tab is-active" type="button" data-view="today">今日</button>
+        <button class="tab" type="button" data-view="path">路线</button>
+        <button class="tab" type="button" data-view="library">卦库</button>
+        <button class="tab" type="button" data-view="journal">日志</button>
+        <button class="tab" type="button" data-view="books">版本</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="view is-active" id="view-today">
+        <div class="today-layout">
+          <section class="daily-panel">
+            <div class="panel-heading">
+              <p class="eyebrow">今日一卦</p>
+              <div class="day-actions">
+                <button class="icon-button" type="button" id="prevHex" aria-label="上一卦" title="上一卦">‹</button>
+                <button class="icon-button" type="button" id="nextHex" aria-label="下一卦" title="下一卦">›</button>
+              </div>
+            </div>
+            <div class="hex-focus">
+              <div class="hex-symbol" id="dailySymbol">䷀</div>
+              <div>
+                <p class="hex-number" id="dailyNumber">第1卦</p>
+                <h2 id="dailyName">乾为天</h2>
+                <p class="hex-theme" id="dailyTheme">刚健、创造、自强不息</p>
+              </div>
+            </div>
+            <div class="hex-visual" id="dailyLines" aria-label="卦画"></div>
+            <div class="daily-grid">
+              <div>
+                <span>卦义</span>
+                <strong id="dailyMeaning">以健行健，先立其志。</strong>
+              </div>
+              <div>
+                <span>今日功课</span>
+                <strong id="dailyPractice">辨认一个该主动承担的位置。</strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="practice-panel">
+            <div class="panel-heading">
+              <p class="eyebrow">知行四问</p>
+              <span class="saved-state" id="saveState">未保存</span>
+            </div>
+            <form id="dailyForm">
+              <label>
+                <span>我现在处在什么时位？</span>
+                <textarea name="situation" rows="3" placeholder="写一个真实处境"></textarea>
+              </label>
+              <div class="field-grid">
+                <label>
+                  <span>应行</span>
+                  <input name="act" type="text" placeholder="今天推进什么" />
+                </label>
+                <label>
+                  <span>应止</span>
+                  <input name="stop" type="text" placeholder="今天克制什么" />
+                </label>
+              </div>
+              <label>
+                <span>三日后用什么结果复盘？</span>
+                <input name="review" type="text" placeholder="可观察、可验证" />
+              </label>
+              <div class="form-actions">
+                <button class="primary" type="submit">保存日课</button>
+                <button class="secondary" type="button" id="completeToday">完成今日</button>
+              </div>
+            </form>
+          </section>
+        </div>
+
+        <section class="workbench">
+          <div class="metric">
+            <span>连续日课</span>
+            <strong id="streakCount">0</strong>
+          </div>
+          <div class="metric">
+            <span>已读卦数</span>
+            <strong id="studiedCount">0</strong>
+          </div>
+          <div class="metric">
+            <span>日志条数</span>
+            <strong id="entryCount">0</strong>
+          </div>
+          <div class="daily-checks" id="dailyChecks"></div>
+        </section>
+      </section>
+
+      <section class="view" id="view-path">
+        <section class="section-head">
+          <div>
+            <p class="eyebrow">四阶段路线</p>
+            <h2>从读懂文字，到识时行事</h2>
+          </div>
+          <button class="secondary" type="button" id="resetPath">重置路线</button>
+        </section>
+        <div class="path-list" id="pathList"></div>
+      </section>
+
+      <section class="view" id="view-library">
+        <section class="section-head library-head">
+          <div>
+            <p class="eyebrow">六十四卦</p>
+            <h2>按象、辞、时位反复进入</h2>
+          </div>
+          <div class="library-tools">
+            <input id="hexSearch" type="search" placeholder="搜索卦名或关键词" />
+            <button class="secondary" type="button" id="showCore">只看核心16卦</button>
+          </div>
+        </section>
+        <div class="library-layout">
+          <div class="hex-list" id="hexList"></div>
+          <aside class="hex-detail" id="hexDetail"></aside>
+        </div>
+      </section>
+
+      <section class="view" id="view-journal">
+        <section class="section-head">
+          <div>
+            <p class="eyebrow">行动日志</p>
+            <h2>记录、复盘、校正判断</h2>
+          </div>
+          <div class="journal-actions">
+            <button class="secondary" type="button" id="exportJournal">导出</button>
+            <button class="danger" type="button" id="clearJournal">清空</button>
+          </div>
+        </section>
+        <div class="journal-list" id="journalList"></div>
+      </section>
+
+      <section class="view" id="view-books">
+        <section class="section-head">
+          <div>
+            <p class="eyebrow">版本组合</p>
+            <h2>一套书分工，不求一本万能</h2>
+          </div>
+        </section>
+        <div class="book-grid" id="bookGrid"></div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
