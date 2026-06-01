@@ -168,8 +168,7 @@ main {
 .journal-card,
 .reading-card,
 .consult-form,
-.bagua-board,
-.share-box {
+.bagua-board {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -185,8 +184,7 @@ main {
 .book-card,
 .journal-card,
 .consult-form,
-.reading-card,
-.share-box {
+.reading-card {
   padding: 22px;
 }
 
@@ -873,19 +871,6 @@ textarea:focus {
   line-height: 1.65;
 }
 
-.share-box {
-  margin-bottom: 16px;
-}
-
-.share-box[hidden] {
-  display: none;
-}
-
-.share-box textarea {
-  min-height: 132px;
-  background: #fbfcfb;
-}
-
 .library-head {
   align-items: end;
 }
@@ -1086,8 +1071,7 @@ textarea:focus {
   .book-card,
   .journal-card,
   .consult-form,
-  .reading-card,
-  .share-box {
+  .reading-card {
     padding: 16px;
   }
 

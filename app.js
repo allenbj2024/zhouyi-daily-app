@@ -458,39 +458,6 @@ function fillExample() {
   form.situation.focus();
 }
 
-function shareText() {
-  return [
-    "我在用这个《易学八卦问事》学习周易：",
-    "https://allenbj2024.github.io/zhouyi-daily-app/",
-    "",
-    "快速用法：",
-    "1. 先看“八卦”，熟悉乾坤震巽坎离艮兑八个基本象。",
-    "2. 到“起卦”写一个具体问题，选择时间起卦或随机起卦。",
-    "3. 看本卦、变卦、应行、应止，把建议变成三日或七日复盘。",
-    "",
-    "这是传统文化学习和自我反省工具，不是替代专业判断的算命结论。",
-  ].join("\n");
-}
-
-async function copyGuide() {
-  const button = $("#copyGuide");
-  const box = $("#shareBox");
-  const message = $("#shareMessage");
-  message.value = shareText();
-  box.hidden = false;
-  message.focus();
-  message.select();
-  try {
-    await navigator.clipboard.writeText(message.value);
-    button.textContent = "已复制";
-  } catch {
-    button.textContent = "已展开";
-  }
-  setTimeout(() => {
-    button.textContent = "复制给朋友";
-  }, 1800);
-}
-
 function streakCount() {
   const completed = new Set(load(STORAGE.completed, []));
   let count = 0;
@@ -699,7 +666,7 @@ function renderConsultJournal() {
       <h3>${hex?.symbol ?? ""} ${hex?.name ?? "本卦"} → ${changed?.symbol ?? ""} ${changed?.name ?? "变卦"}</h3>
       <p>${escapeHtml(item.question || "未写问题")}</p>
       <dl>
-        <div><dt>对象</dt><dd>${escapeHtml(item.person || "未填写")}</dd></div>
+        <div><dt>记录名</dt><dd>${escapeHtml(item.person || "未填写")}</dd></div>
         <div><dt>动爻</dt><dd>${escapeHtml(movingText(item.moving))}</dd></div>
         <div><dt>应行</dt><dd>${escapeHtml(item.reading?.action || "")}</dd></div>
         <div><dt>复盘</dt><dd>${escapeHtml(item.reading?.review || "")}</dd></div>
@@ -821,7 +788,7 @@ function buildConsultation(form) {
       action: `${hex.practice}${guide.action}`,
       stop: guide.stop,
       review: guide.review,
-      friend: `这卦不替你下决定，它提醒你先看时位：${hex.theme}。现在更适合做一个能验证的小动作，再根据反馈调整。`,
+      reminder: `这卦不替你下决定，它提醒你先看时位：${hex.theme}。现在更适合做一个能验证的小动作，再根据反馈调整。`,
     },
   };
 }
@@ -833,6 +800,7 @@ function movingText(moving = []) {
 function renderReading(consultation, target) {
   const hex = HEXAGRAMS.find((item) => item.id === consultation.hexId);
   const changed = HEXAGRAMS.find((item) => item.id === consultation.changedHexId);
+  const reminder = consultation.reading.reminder ?? consultation.reading.friend ?? "";
   target.innerHTML = `
     <article class="reading-card">
       <div class="reading-head">
@@ -863,9 +831,9 @@ function renderReading(consultation, target) {
         <div><dt>应行</dt><dd>${escapeHtml(consultation.reading.action)}</dd></div>
         <div><dt>应止</dt><dd>${escapeHtml(consultation.reading.stop)}</dd></div>
         <div><dt>复盘</dt><dd>${escapeHtml(consultation.reading.review)}</dd></div>
-        <div><dt>给朋友的话</dt><dd>${escapeHtml(consultation.reading.friend)}</dd></div>
+        <div><dt>给自己的提醒</dt><dd>${escapeHtml(reminder)}</dd></div>
       </dl>
-      <p class="notice">这份解读只作为传统文化学习和反省练习。涉及疾病、诉讼、投资、婚姻等重大事项，请让对方寻求专业意见。</p>
+      <p class="notice">这份解读只作为传统文化学习和反省练习。涉及疾病、诉讼、投资、婚姻等重大事项，请寻求专业意见。</p>
     </article>
   `;
 }
@@ -874,6 +842,7 @@ function renderQuickResult(consultation) {
   const hex = HEXAGRAMS.find((item) => item.id === consultation.hexId);
   const changed = HEXAGRAMS.find((item) => item.id === consultation.changedHexId);
   const target = $("#quickResult");
+  const reminder = consultation.reading.reminder ?? consultation.reading.friend ?? "";
   target.hidden = false;
   target.innerHTML = `
     <div>
@@ -884,7 +853,7 @@ function renderQuickResult(consultation) {
       <span>变卦</span>
       <strong>${changed.symbol} ${changed.name}</strong>
     </div>
-    <p>${escapeHtml(consultation.reading.friend)}</p>
+    <p>${escapeHtml(reminder)}</p>
     <button class="secondary" type="button" data-open-reading>看完整解读</button>
   `;
 }
@@ -989,7 +958,7 @@ function exportJournal() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `易学八卦问事-${todayKey()}.json`;
+  link.download = `易学八卦自占-${todayKey()}.json`;
   link.click();
   URL.revokeObjectURL(url);
 }
@@ -1041,7 +1010,6 @@ function bindEvents() {
   $("#consultForm").addEventListener("submit", handleConsultSubmit);
   $("#consultForm").method.addEventListener("change", (event) => updateManualVisibility(event.currentTarget.form));
   $("#saveConsult").addEventListener("click", saveCurrentConsultation);
-  $("#copyGuide").addEventListener("click", copyGuide);
 
   $("#castLine").addEventListener("click", () => {
     if (manualCast.length >= 6) return;
