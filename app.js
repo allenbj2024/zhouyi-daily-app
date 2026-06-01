@@ -1,12 +1,120 @@
 const TRIGRAMS = {
-  qian: { name: "乾", image: "天", lines: [1, 1, 1] },
-  kun: { name: "坤", image: "地", lines: [0, 0, 0] },
-  zhen: { name: "震", image: "雷", lines: [1, 0, 0] },
-  xun: { name: "巽", image: "风", lines: [0, 1, 1] },
-  kan: { name: "坎", image: "水", lines: [0, 1, 0] },
-  li: { name: "离", image: "火", lines: [1, 0, 1] },
-  gen: { name: "艮", image: "山", lines: [0, 0, 1] },
-  dui: { name: "兑", image: "泽", lines: [1, 1, 0] },
+  qian: {
+    key: "qian",
+    name: "乾",
+    symbol: "☰",
+    image: "天",
+    lines: [1, 1, 1],
+    direction: "西北",
+    family: "父",
+    virtue: "健",
+    body: "首",
+    learning: "乾象刚健，重在主动、承担、创造。学乾不是逞强，而是知道何时该站出来。",
+    questions: ["我现在该主动承担什么？", "这份力量是否正当？", "我有没有躁进？"],
+  },
+  dui: {
+    key: "dui",
+    name: "兑",
+    symbol: "☱",
+    image: "泽",
+    lines: [1, 1, 0],
+    direction: "西",
+    family: "少女",
+    virtue: "悦",
+    body: "口",
+    learning: "兑象喜悦、表达、交流。学兑要分辨真诚的悦与讨好的悦。",
+    questions: ["我说的话是在成事，还是在取悦？", "气氛变好了，原则还在吗？", "哪里需要一次坦诚表达？"],
+  },
+  li: {
+    key: "li",
+    name: "离",
+    symbol: "☲",
+    image: "火",
+    lines: [1, 0, 1],
+    direction: "南",
+    family: "中女",
+    virtue: "丽",
+    body: "目",
+    learning: "离象光明、依附、辨识。学离要让判断有证据，不让情绪假装成看见。",
+    questions: ["我看见的是事实还是想象？", "这个判断依附在什么证据上？", "哪里需要照亮而不是放大？"],
+  },
+  zhen: {
+    key: "zhen",
+    name: "震",
+    symbol: "☳",
+    image: "雷",
+    lines: [1, 0, 0],
+    direction: "东",
+    family: "长男",
+    virtue: "动",
+    body: "足",
+    learning: "震象发动、惊醒、开始。学震要把惊动化成清醒行动，而不是慌乱反应。",
+    questions: ["这次震动在提醒什么？", "第一步应该多小？", "我是在行动还是在反射？"],
+  },
+  xun: {
+    key: "xun",
+    name: "巽",
+    symbol: "☴",
+    image: "风",
+    lines: [0, 1, 1],
+    direction: "东南",
+    family: "长女",
+    virtue: "入",
+    body: "股",
+    learning: "巽象入、顺、渗透。学巽不是软弱，而是用柔和而持续的方式进入问题。",
+    questions: ["我能否换一种更容易进入的方式？", "哪些话可以更柔，但更准确？", "这件事需要持续渗透多久？"],
+  },
+  kan: {
+    key: "kan",
+    name: "坎",
+    symbol: "☵",
+    image: "水",
+    lines: [0, 1, 0],
+    direction: "北",
+    family: "中男",
+    virtue: "陷",
+    body: "耳",
+    learning: "坎象险、陷、反复练习。学坎是在险中守信，在压力里保留清明。",
+    questions: ["真正的风险在哪里？", "我能守住哪条底线？", "这次困难要我练习什么？"],
+  },
+  gen: {
+    key: "gen",
+    name: "艮",
+    symbol: "☶",
+    image: "山",
+    lines: [0, 0, 1],
+    direction: "东北",
+    family: "少男",
+    virtue: "止",
+    body: "手",
+    learning: "艮象止、限度、边界。学艮是知道什么时候停，停在哪里。",
+    questions: ["我今天该停在哪里？", "这个边界有没有说清？", "停下后能看见什么？"],
+  },
+  kun: {
+    key: "kun",
+    name: "坤",
+    symbol: "☷",
+    image: "地",
+    lines: [0, 0, 0],
+    direction: "西南",
+    family: "母",
+    virtue: "顺",
+    body: "腹",
+    learning: "坤象承载、顺势、成物。学坤不是被动，而是把承诺落成可交付结果。",
+    questions: ["我能承载什么？", "现在该顺势配合谁？", "地基是否足够厚？"],
+  },
+};
+
+const TRIGRAM_ORDER = ["qian", "dui", "li", "zhen", "xun", "kan", "gen", "kun"];
+const BAGUA_POSITIONS = {
+  qian: "nw",
+  kan: "n",
+  gen: "ne",
+  dui: "w",
+  zhen: "e",
+  kun: "sw",
+  li: "s",
+  xun: "se",
 };
 
 const HEXAGRAMS = [
@@ -82,6 +190,8 @@ const HEXAGRAMS = [
     id: index + 1,
     symbol: String.fromCodePoint(0x4dc0 + index),
     name,
+    lowerKey,
+    upperKey,
     lower,
     upper,
     theme,
@@ -93,27 +203,27 @@ const HEXAGRAMS = [
 
 const PATH = [
   {
-    title: "先立底本",
-    meta: "1个月",
-    text: "读《周易译注》导读、乾坤两卦、《系辞上传》，只抓阴阳、时位、中正、吉凶悔吝。",
-    tasks: ["读乾坤", "读系辞上传", "整理关键词", "建立日志"],
+    title: "八卦先熟",
+    meta: "第1个月",
+    text: "每天看一卦象：乾健、坤顺、震动、巽入、坎险、离明、艮止、兑悦。先能用八象看日常处境。",
+    tasks: ["背八象", "会画三爻", "每天举一例", "完成辨卦练习"],
   },
   {
     title: "通读六十四卦",
     meta: "3到6个月",
-    text: "每卦一页笔记，记录卦象、卦辞、六爻进程，以及此卦所讲的处境。",
+    text: "每卦一页笔记，记录上下卦、卦辞、六爻进程，以及此卦所讲的处境。",
     tasks: ["每周三卦", "完成卦象表", "复盘十条日志", "标记核心16卦"],
   },
   {
-    title: "进入程朱义理",
-    meta: "3个月",
-    text: "以《周易程氏传》和《周易本义》对读核心16卦，从文字理解转入修身处事。",
-    tasks: ["对读程传", "对读本义", "整理进退守变", "做一次月复盘"],
+    title: "问事与复盘",
+    meta: "持续练习",
+    text: "每次起卦只问一件具体事，输出应行、应止、复盘标准。三日或七日后回看，不追求神秘，追求校正判断。",
+    tasks: ["写清问题", "生成解读", "保存记录", "七日复盘"],
   },
   {
-    title: "玩辞测象",
-    meta: "3到6个月",
-    text: "读《周易玩辞》，围绕字词、同文、反义、象辞关系反复玩味。",
+    title: "玩辞入深",
+    meta: "第二轮以后",
+    text: "读《周易玩辞》，围绕字词、同文、反义、象辞关系反复玩味，把解卦从套话变成细读。",
     tasks: ["读玩辞序", "选一组辞", "比较程朱项", "写一篇心得"],
   },
 ];
@@ -151,19 +261,70 @@ const BOOKS = [
   },
 ];
 
+const TOPIC_GUIDE = {
+  事业: {
+    lens: "先看角色、资源、节奏和边界。",
+    action: "把下一步缩成一个可交付动作，不要只停留在想法。",
+    stop: "停止用焦虑催促时机，先补齐事实和责任。",
+    review: "七日后看是否完成一次明确沟通、一个交付物或一个决策节点。",
+  },
+  关系: {
+    lens: "先分清事实、情绪、名分和期待。",
+    action: "用一句诚实而有分寸的话推进关系。",
+    stop: "停止替对方脑补动机，也停止用沉默惩罚。",
+    review: "三日后看气氛是否更清楚，边界是否更稳定。",
+  },
+  选择: {
+    lens: "先看哪一个选项更合时位，更能承受后果。",
+    action: "把大选择变成一次小试探，用结果校正判断。",
+    stop: "停止在两个抽象想象里来回耗损。",
+    review: "七日后看小试探带来了什么证据。",
+  },
+  修身: {
+    lens: "先看自己哪一个惯性正在主导判断。",
+    action: "把卦义落成一个今日可做的修正。",
+    stop: "停止把外部处境全部归咎于别人。",
+    review: "三日后看自己的反应是否更稳、更清醒。",
+  },
+  其他: {
+    lens: "先把问题缩小，只问一件具体事。",
+    action: "选一个最小行动，让情况从模糊变得可观察。",
+    stop: "停止追求一次看透全部。",
+    review: "七日后看问题是否变清楚，行动是否产生反馈。",
+  },
+};
+
 const STORAGE = {
   entries: "zhouyi.entries.v1",
   studied: "zhouyi.studied.v1",
   completed: "zhouyi.completedDates.v1",
   checks: "zhouyi.dailyChecks.v1",
   path: "zhouyi.path.v1",
+  consults: "zhouyi.consults.v1",
 };
+
+const HEXAGRAM_BY_LINES = new Map();
+HEXAGRAMS.forEach((hex) => HEXAGRAM_BY_LINES.set(lineKey(linesFor(hex)), hex));
 
 let activeIndex = dayOfYear(new Date()) % HEXAGRAMS.length;
 let coreOnly = false;
+let selectedTrigramKey = "qian";
+let currentJournal = "daily";
+let currentConsultation = null;
+let manualCast = [];
+let drillAnswerKey = null;
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 
 function load(key, fallback) {
   try {
@@ -189,30 +350,42 @@ function dayOfYear(date) {
   return Math.floor((date - start) / 86400000);
 }
 
-function formatDateLabel() {
+function formatDateLabel(date = new Date()) {
   return new Intl.DateTimeFormat("zh-CN", {
     year: "numeric",
     month: "long",
     day: "numeric",
     weekday: "long",
-  }).format(new Date());
+  }).format(date);
 }
 
 function linesFor(hex) {
   return [...hex.lower.lines, ...hex.upper.lines];
 }
 
-function renderLines(target, hex) {
-  target.innerHTML = "";
-  linesFor(hex)
+function lineKey(lines) {
+  return lines.join("");
+}
+
+function findHexByLines(lines) {
+  return HEXAGRAM_BY_LINES.get(lineKey(lines)) ?? HEXAGRAMS[0];
+}
+
+function renderLineRows(lines, moving = []) {
+  return lines
     .slice()
     .reverse()
-    .forEach((line) => {
-      const row = document.createElement("div");
-      row.className = `line-row${line ? "" : " is-broken"}`;
-      row.innerHTML = line ? "<i></i>" : "<i></i><i></i>";
-      target.appendChild(row);
-    });
+    .map((line, reverseIndex) => {
+      const number = lines.length - reverseIndex;
+      const isMoving = moving.includes(number);
+      const pieces = line ? "<i></i>" : "<i></i><i></i>";
+      return `<div class="line-row${line ? "" : " is-broken"}${isMoving ? " is-moving" : ""}" title="第${number}爻">${pieces}</div>`;
+    })
+    .join("");
+}
+
+function renderLines(target, hex, moving = []) {
+  target.innerHTML = renderLineRows(linesFor(hex), moving);
 }
 
 function getEntryForToday() {
@@ -225,7 +398,7 @@ function renderToday() {
   $("#dailySymbol").textContent = hex.symbol;
   $("#dailyNumber").textContent = `第${hex.id}卦`;
   $("#dailyName").textContent = hex.name;
-  $("#dailyTheme").textContent = hex.theme;
+  $("#dailyTheme").textContent = `${hex.upper.name}${hex.lower.name}之象：${hex.theme}`;
   $("#dailyMeaning").textContent = hex.meaning;
   $("#dailyPractice").textContent = hex.practice;
   renderLines($("#dailyLines"), hex);
@@ -249,10 +422,10 @@ function renderChecks() {
   const state = load(STORAGE.checks, {});
   const todayChecks = state[today] ?? {};
   const items = [
+    ["bagua", "辨一个八卦象"],
     ["read", "读原文与译注"],
-    ["compare", "对照程朱"],
     ["write", "写知行四问"],
-    ["review", "复看昨日行动"],
+    ["review", "复盘一次行动"],
   ];
   const wrap = $("#dailyChecks");
   wrap.innerHTML = "";
@@ -267,9 +440,55 @@ function renderChecks() {
 function renderMetrics() {
   const entries = load(STORAGE.entries, []);
   const studied = load(STORAGE.studied, []);
+  const consults = load(STORAGE.consults, []);
   $("#streakCount").textContent = String(streakCount());
   $("#studiedCount").textContent = String(new Set(studied).size);
-  $("#entryCount").textContent = String(entries.length);
+  $("#consultMetric").textContent = String(consults.length);
+  $("#consultCount").textContent = `${consults.length} 条记录`;
+}
+
+function fillExample() {
+  const hex = HEXAGRAMS[activeIndex];
+  const form = $("#dailyForm");
+  form.situation.value = `我今天用${hex.name}观察一个真实处境：${hex.theme}。先写事实，再判断该进、该守，还是该止。`;
+  form.act.value = hex.practice;
+  form.stop.value = "不凭情绪和惯性马上反应。";
+  form.review.value = "三日后看这个行动是否真的改变了一个小结果。";
+  $("#saveState").textContent = "示例未保存";
+  form.situation.focus();
+}
+
+function shareText() {
+  return [
+    "我在用这个《易学八卦问事》学习周易：",
+    "https://allenbj2024.github.io/zhouyi-daily-app/",
+    "",
+    "快速用法：",
+    "1. 先看“八卦”，熟悉乾坤震巽坎离艮兑八个基本象。",
+    "2. 到“起卦”写一个具体问题，选择时间起卦或随机起卦。",
+    "3. 看本卦、变卦、应行、应止，把建议变成三日或七日复盘。",
+    "",
+    "这是传统文化学习和自我反省工具，不是替代专业判断的算命结论。",
+  ].join("\n");
+}
+
+async function copyGuide() {
+  const button = $("#copyGuide");
+  const box = $("#shareBox");
+  const message = $("#shareMessage");
+  message.value = shareText();
+  box.hidden = false;
+  message.focus();
+  message.select();
+  try {
+    await navigator.clipboard.writeText(message.value);
+    button.textContent = "已复制";
+  } catch {
+    button.textContent = "已展开";
+  }
+  setTimeout(() => {
+    button.textContent = "复制给朋友";
+  }, 1800);
 }
 
 function streakCount() {
@@ -295,8 +514,8 @@ function completeHex(hexId = HEXAGRAMS[activeIndex].id) {
 
 function renderPath() {
   const progress = load(STORAGE.path, {});
-  const list = $("#pathList");
-  list.innerHTML = "";
+  const list = document.createElement("div");
+  list.className = "path-list";
   PATH.forEach((phase, phaseIndex) => {
     const card = document.createElement("article");
     card.className = "path-card";
@@ -318,6 +537,67 @@ function renderPath() {
     `;
     list.appendChild(card);
   });
+  return list;
+}
+
+function renderBagua() {
+  const board = $("#baguaBoard");
+  board.innerHTML = "";
+  Object.entries(BAGUA_POSITIONS).forEach(([key, pos]) => {
+    const trigram = TRIGRAMS[key];
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `trigram-tile pos-${pos}${key === selectedTrigramKey ? " is-active" : ""}`;
+    button.dataset.trigram = key;
+    button.innerHTML = `
+      <span class="trigram-symbol">${trigram.symbol}</span>
+      <strong>${trigram.name}</strong>
+      <small>${trigram.image} / ${trigram.virtue}</small>
+    `;
+    board.appendChild(button);
+  });
+  const center = document.createElement("div");
+  center.className = "bagua-center";
+  center.innerHTML = `<strong>八卦</strong><span>点一卦看象义</span>`;
+  board.appendChild(center);
+  renderTrigramDetail();
+}
+
+function renderTrigramDetail() {
+  const trigram = TRIGRAMS[selectedTrigramKey];
+  const related = HEXAGRAMS.filter((hex) => hex.lowerKey === selectedTrigramKey || hex.upperKey === selectedTrigramKey).slice(0, 6);
+  $("#trigramDetail").innerHTML = `
+    <div class="detail-symbol">${trigram.symbol}</div>
+    <p class="hex-number">${trigram.name}为${trigram.image}</p>
+    <h3>${trigram.name}卦：${trigram.virtue}</h3>
+    <div class="trigram-lines">${renderLineRows(trigram.lines)}</div>
+    <div class="detail-tags">
+      <span>${trigram.direction}</span>
+      <span>${trigram.family}</span>
+      <span>${trigram.body}</span>
+    </div>
+    <p>${trigram.learning}</p>
+    <div class="question-list">
+      ${trigram.questions.map((item) => `<span>${item}</span>`).join("")}
+    </div>
+    <h4>相关卦例</h4>
+    <div class="related-hexes">
+      ${related.map((hex) => `<button type="button" data-set-today="${hex.id}">${hex.symbol} ${hex.name}</button>`).join("")}
+    </div>
+  `;
+}
+
+function startBaguaDrill() {
+  const panel = $("#baguaDrill");
+  panel.hidden = false;
+  drillAnswerKey = TRIGRAM_ORDER[Math.floor(Math.random() * TRIGRAM_ORDER.length)];
+  const answer = TRIGRAMS[drillAnswerKey];
+  $("#drillLines").innerHTML = renderLineRows(answer.lines);
+  $("#drillFeedback").textContent = "看三爻阴阳，选出对应的卦。";
+  const options = TRIGRAM_ORDER.slice().sort(() => Math.random() - 0.5);
+  $("#drillOptions").innerHTML = options
+    .map((key) => `<button class="secondary" type="button" data-drill="${key}">${TRIGRAMS[key].symbol} ${TRIGRAMS[key].name}</button>`)
+    .join("");
 }
 
 function renderLibrary() {
@@ -326,7 +606,7 @@ function renderLibrary() {
   list.innerHTML = "";
   const filtered = HEXAGRAMS.filter((hex) => {
     const matchesCore = coreOnly ? hex.core : true;
-    const haystack = `${hex.name} ${hex.theme} ${hex.meaning} ${hex.practice} ${hex.lower.name}${hex.upper.name}`;
+    const haystack = `${hex.name} ${hex.theme} ${hex.meaning} ${hex.practice} ${hex.lower.name}${hex.upper.name} ${hex.lower.image}${hex.upper.image}`;
     return matchesCore && (!query || haystack.includes(query));
   });
   filtered.forEach((hex) => {
@@ -337,6 +617,7 @@ function renderLibrary() {
     button.innerHTML = `
       <div class="hex-card-symbol">${hex.symbol}</div>
       <h3>${hex.id}. ${hex.name}</h3>
+      <p>上${hex.upper.name}${hex.upper.image} 下${hex.lower.name}${hex.lower.image}</p>
       <p>${hex.theme}</p>
     `;
     list.appendChild(button);
@@ -353,6 +634,7 @@ function renderHexDetail(hex) {
     <div class="detail-symbol">${hex.symbol}</div>
     <p class="hex-number">第${hex.id}卦</p>
     <h3>${hex.name}</h3>
+    <div class="trigram-lines hex-detail-lines">${renderLineRows(linesFor(hex))}</div>
     <p>${hex.theme}</p>
     <div class="detail-tags">
       <span>上${hex.upper.name} ${hex.upper.image}</span>
@@ -360,7 +642,7 @@ function renderHexDetail(hex) {
       ${hex.core ? "<span>核心16卦</span>" : ""}
     </div>
     <p><strong>卦义：</strong>${hex.meaning}</p>
-    <p><strong>今日功课：</strong>${hex.practice}</p>
+    <p><strong>行动：</strong>${hex.practice}</p>
     <div class="detail-actions">
       <button class="primary" type="button" data-set-today="${hex.id}">设为今日</button>
       <button class="secondary" type="button" data-mark-read="${hex.id}">标记已读</button>
@@ -369,10 +651,14 @@ function renderHexDetail(hex) {
 }
 
 function renderJournal() {
+  if (currentJournal === "consult") {
+    renderConsultJournal();
+    return;
+  }
   const entries = load(STORAGE.entries, []).slice().sort((a, b) => b.savedAt.localeCompare(a.savedAt));
   const list = $("#journalList");
   if (!entries.length) {
-    list.innerHTML = `<div class="empty">还没有日志。完成一次今日日课后，这里会自动出现。</div>`;
+    list.innerHTML = `<div class="empty">还没有日课日志。完成一次今日日课后，这里会自动出现。</div>`;
     return;
   }
   list.innerHTML = "";
@@ -381,14 +667,42 @@ function renderJournal() {
     const card = document.createElement("article");
     card.className = "journal-card";
     card.innerHTML = `
-      <span class="journal-date">${entry.date}</span>
+      <span class="journal-date">${escapeHtml(entry.date)}</span>
       <h3>${hex?.symbol ?? ""} ${hex?.name ?? "未记录卦名"}</h3>
-      <p>${entry.situation || "未写处境"}</p>
+      <p>${escapeHtml(entry.situation || "未写处境")}</p>
       <dl>
-        <div><dt>应行</dt><dd>${entry.act || "未填"}</dd></div>
-        <div><dt>应止</dt><dd>${entry.stop || "未填"}</dd></div>
-        <div><dt>复盘标准</dt><dd>${entry.review || "未填"}</dd></div>
+        <div><dt>应行</dt><dd>${escapeHtml(entry.act || "未填")}</dd></div>
+        <div><dt>应止</dt><dd>${escapeHtml(entry.stop || "未填")}</dd></div>
+        <div><dt>复盘标准</dt><dd>${escapeHtml(entry.review || "未填")}</dd></div>
         <div><dt>保存</dt><dd>${new Date(entry.savedAt).toLocaleString("zh-CN")}</dd></div>
+      </dl>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function renderConsultJournal() {
+  const consults = load(STORAGE.consults, []).slice().sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const list = $("#journalList");
+  if (!consults.length) {
+    list.innerHTML = `<div class="empty">还没有解卦记录。到“起卦”生成并保存一次解读后，这里会出现。</div>`;
+    return;
+  }
+  list.innerHTML = "";
+  consults.forEach((item) => {
+    const hex = HEXAGRAMS.find((hexagram) => hexagram.id === item.hexId);
+    const changed = HEXAGRAMS.find((hexagram) => hexagram.id === item.changedHexId);
+    const card = document.createElement("article");
+    card.className = "journal-card";
+    card.innerHTML = `
+      <span class="journal-date">${new Date(item.createdAt).toLocaleString("zh-CN")} · ${escapeHtml(item.topic)}</span>
+      <h3>${hex?.symbol ?? ""} ${hex?.name ?? "本卦"} → ${changed?.symbol ?? ""} ${changed?.name ?? "变卦"}</h3>
+      <p>${escapeHtml(item.question || "未写问题")}</p>
+      <dl>
+        <div><dt>对象</dt><dd>${escapeHtml(item.person || "未填写")}</dd></div>
+        <div><dt>动爻</dt><dd>${escapeHtml(movingText(item.moving))}</dd></div>
+        <div><dt>应行</dt><dd>${escapeHtml(item.reading?.action || "")}</dd></div>
+        <div><dt>复盘</dt><dd>${escapeHtml(item.reading?.review || "")}</dd></div>
       </dl>
     `;
     list.appendChild(card);
@@ -438,6 +752,258 @@ function saveDailyEntry(event) {
   renderJournal();
 }
 
+function hashString(text) {
+  let hash = 2166136261;
+  for (let index = 0; index < text.length; index += 1) {
+    hash ^= text.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function randomInt(max) {
+  const array = new Uint32Array(1);
+  if (window.crypto?.getRandomValues) {
+    window.crypto.getRandomValues(array);
+    return array[0] % max;
+  }
+  return Math.floor(Math.random() * max);
+}
+
+function castByTime({ question, topic, person }) {
+  const now = new Date();
+  const seed = hashString(`${question}|${topic}|${person}|${now.toISOString().slice(0, 16)}`);
+  const lines = Array.from({ length: 6 }, (_, index) => ((seed >>> ((index * 5) % 24)) + index + seed) % 2);
+  const moving = [((seed >>> 3) % 6) + 1];
+  const changedLines = lines.map((line, index) => (moving.includes(index + 1) ? Number(!line) : line));
+  return { lines, moving, changedLines, methodLabel: "时间起卦" };
+}
+
+function yaoValueToLine(value) {
+  return value === 7 || value === 9 ? 1 : 0;
+}
+
+function castByRandom() {
+  const values = manualCast.length === 6 ? manualCast.slice() : Array.from({ length: 6 }, () => [6, 7, 8, 9][randomInt(4)]);
+  const lines = values.map(yaoValueToLine);
+  const moving = values.map((value, index) => (value === 6 || value === 9 ? index + 1 : null)).filter(Boolean);
+  const normalizedMoving = moving.length ? moving : [randomInt(6) + 1];
+  const changedLines = lines.map((line, index) => (normalizedMoving.includes(index + 1) ? Number(!line) : line));
+  return { lines, moving: normalizedMoving, changedLines, methodLabel: "随机起卦", values };
+}
+
+function buildConsultation(form) {
+  const person = form.person?.value.trim() ?? "";
+  const question = form.question.value.trim() || "未写明的问题";
+  const topic = form.topic.value;
+  const method = form.method.value;
+  const cast = method === "time" ? castByTime({ question, topic, person }) : castByRandom();
+  const hex = findHexByLines(cast.lines);
+  const changed = findHexByLines(cast.changedLines);
+  const guide = TOPIC_GUIDE[topic] ?? TOPIC_GUIDE.其他;
+  return {
+    id: `${Date.now().toString(36)}-${randomInt(9999)}`,
+    createdAt: new Date().toISOString(),
+    person,
+    question,
+    topic,
+    method,
+    methodLabel: cast.methodLabel,
+    lines: cast.lines,
+    moving: cast.moving,
+    changedLines: cast.changedLines,
+    hexId: hex.id,
+    changedHexId: changed.id,
+    reading: {
+      situation: `本卦为${hex.name}，上${hex.upper.name}${hex.upper.image}、下${hex.lower.name}${hex.lower.image}。这件事先看“${hex.theme}”：${hex.meaning}`,
+      change: changed.id === hex.id ? "变卦与本卦相同，说明重点在把本卦做扎实。" : `变为${changed.name}，后势转向“${changed.theme}”。`,
+      lens: guide.lens,
+      action: `${hex.practice}${guide.action}`,
+      stop: guide.stop,
+      review: guide.review,
+      friend: `这卦不替你下决定，它提醒你先看时位：${hex.theme}。现在更适合做一个能验证的小动作，再根据反馈调整。`,
+    },
+  };
+}
+
+function movingText(moving = []) {
+  return moving.length ? moving.map((item) => `第${item}爻`).join("、") : "无动爻";
+}
+
+function renderReading(consultation, target) {
+  const hex = HEXAGRAMS.find((item) => item.id === consultation.hexId);
+  const changed = HEXAGRAMS.find((item) => item.id === consultation.changedHexId);
+  target.innerHTML = `
+    <article class="reading-card">
+      <div class="reading-head">
+        <div>
+          <p class="eyebrow">${escapeHtml(consultation.methodLabel)} · ${escapeHtml(consultation.topic)}</p>
+          <h3>${hex.symbol} ${hex.name} <span>→</span> ${changed.symbol} ${changed.name}</h3>
+          <p>${escapeHtml(consultation.question)}</p>
+        </div>
+        <button class="secondary" type="button" data-copy-reading>复制解读</button>
+      </div>
+      <div class="reading-hexes">
+        <div>
+          <span>本卦</span>
+          <strong>${hex.symbol} ${hex.name}</strong>
+          <div class="trigram-lines">${renderLineRows(consultation.lines, consultation.moving)}</div>
+        </div>
+        <div>
+          <span>变卦</span>
+          <strong>${changed.symbol} ${changed.name}</strong>
+          <div class="trigram-lines">${renderLineRows(consultation.changedLines)}</div>
+        </div>
+      </div>
+      <dl class="reading-list">
+        <div><dt>动爻</dt><dd>${movingText(consultation.moving)}</dd></div>
+        <div><dt>处境</dt><dd>${escapeHtml(consultation.reading.situation)}</dd></div>
+        <div><dt>变势</dt><dd>${escapeHtml(consultation.reading.change)}</dd></div>
+        <div><dt>看法</dt><dd>${escapeHtml(consultation.reading.lens)}</dd></div>
+        <div><dt>应行</dt><dd>${escapeHtml(consultation.reading.action)}</dd></div>
+        <div><dt>应止</dt><dd>${escapeHtml(consultation.reading.stop)}</dd></div>
+        <div><dt>复盘</dt><dd>${escapeHtml(consultation.reading.review)}</dd></div>
+        <div><dt>给朋友的话</dt><dd>${escapeHtml(consultation.reading.friend)}</dd></div>
+      </dl>
+      <p class="notice">这份解读只作为传统文化学习和反省练习。涉及疾病、诉讼、投资、婚姻等重大事项，请让对方寻求专业意见。</p>
+    </article>
+  `;
+}
+
+function renderQuickResult(consultation) {
+  const hex = HEXAGRAMS.find((item) => item.id === consultation.hexId);
+  const changed = HEXAGRAMS.find((item) => item.id === consultation.changedHexId);
+  const target = $("#quickResult");
+  target.hidden = false;
+  target.innerHTML = `
+    <div>
+      <span>本卦</span>
+      <strong>${hex.symbol} ${hex.name}</strong>
+    </div>
+    <div>
+      <span>变卦</span>
+      <strong>${changed.symbol} ${changed.name}</strong>
+    </div>
+    <p>${escapeHtml(consultation.reading.friend)}</p>
+    <button class="secondary" type="button" data-open-reading>看完整解读</button>
+  `;
+}
+
+function formatReading(consultation) {
+  const hex = HEXAGRAMS.find((item) => item.id === consultation.hexId);
+  const changed = HEXAGRAMS.find((item) => item.id === consultation.changedHexId);
+  return [
+    `问题：${consultation.question}`,
+    `类型：${consultation.topic}`,
+    `本卦：${hex.symbol} ${hex.name}`,
+    `变卦：${changed.symbol} ${changed.name}`,
+    `动爻：${movingText(consultation.moving)}`,
+    "",
+    `处境：${consultation.reading.situation}`,
+    `变势：${consultation.reading.change}`,
+    `应行：${consultation.reading.action}`,
+    `应止：${consultation.reading.stop}`,
+    `复盘：${consultation.reading.review}`,
+    "",
+    "提醒：这只是传统文化学习和自我反省，不替代医疗、法律、投资等专业意见。",
+  ].join("\n");
+}
+
+async function copyCurrentReading(button) {
+  if (!currentConsultation) return;
+  try {
+    await navigator.clipboard.writeText(formatReading(currentConsultation));
+    button.textContent = "已复制";
+  } catch {
+    button.textContent = "复制失败";
+  }
+  setTimeout(() => {
+    button.textContent = "复制解读";
+  }, 1600);
+}
+
+function saveCurrentConsultation() {
+  if (!currentConsultation) {
+    $("#readingPanel").innerHTML = `<div class="empty">请先生成一次解读，再保存。</div>`;
+    return;
+  }
+  const consults = load(STORAGE.consults, []);
+  const exists = consults.some((item) => item.id === currentConsultation.id);
+  if (!exists) {
+    consults.push(currentConsultation);
+    save(STORAGE.consults, consults);
+  }
+  renderMetrics();
+  renderJournal();
+  $("#saveConsult").textContent = "已保存";
+  setTimeout(() => {
+    $("#saveConsult").textContent = "保存解卦";
+  }, 1600);
+}
+
+function renderManualCast() {
+  const wrap = $("#manualLines");
+  wrap.innerHTML = "";
+  for (let index = 5; index >= 0; index -= 1) {
+    const value = manualCast[index];
+    const row = document.createElement("div");
+    row.className = "manual-line";
+    if (value) {
+      const line = yaoValueToLine(value);
+      row.innerHTML = `<span>第${index + 1}爻</span><div class="line-row${line ? "" : " is-broken"}${value === 6 || value === 9 ? " is-moving" : ""}">${line ? "<i></i>" : "<i></i><i></i>"}</div><b>${value}</b>`;
+    } else {
+      row.innerHTML = `<span>第${index + 1}爻</span><div class="line-row is-empty"><i></i></div><b>-</b>`;
+    }
+    wrap.appendChild(row);
+  }
+}
+
+function updateManualVisibility(form = $("#consultForm")) {
+  $("#manualCast").hidden = form.method.value !== "random";
+}
+
+function handleConsultSubmit(event) {
+  event.preventDefault();
+  currentConsultation = buildConsultation(event.currentTarget);
+  renderReading(currentConsultation, $("#readingPanel"));
+  renderQuickResult(currentConsultation);
+  $("#saveConsult").textContent = "保存解卦";
+}
+
+function handleQuickConsult(event) {
+  event.preventDefault();
+  currentConsultation = buildConsultation(event.currentTarget);
+  renderQuickResult(currentConsultation);
+  renderReading(currentConsultation, $("#readingPanel"));
+}
+
+function exportJournal() {
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    entries: load(STORAGE.entries, []),
+    consults: load(STORAGE.consults, []),
+    studied: load(STORAGE.studied, []),
+    completedDates: load(STORAGE.completed, []),
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `易学八卦问事-${todayKey()}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function clearJournal() {
+  if (!confirm("清空后，本地日课、解卦记录和完成记录都会删除。")) return;
+  save(STORAGE.entries, []);
+  save(STORAGE.consults, []);
+  save(STORAGE.studied, []);
+  save(STORAGE.completed, []);
+  renderToday();
+  renderJournal();
+}
+
 function bindEvents() {
   $$(".tab").forEach((tab) => {
     tab.addEventListener("click", () => {
@@ -445,8 +1011,10 @@ function bindEvents() {
       $$(".view").forEach((item) => item.classList.remove("is-active"));
       tab.classList.add("is-active");
       $(`#view-${tab.dataset.view}`).classList.add("is-active");
+      if (tab.dataset.view === "bagua") renderBagua();
       if (tab.dataset.view === "library") renderLibrary();
       if (tab.dataset.view === "journal") renderJournal();
+      if (tab.dataset.view === "divine") updateManualVisibility();
     });
   });
 
@@ -463,10 +1031,67 @@ function bindEvents() {
   });
 
   $("#dailyForm").addEventListener("submit", saveDailyEntry);
-
   $("#completeToday").addEventListener("click", () => {
     completeHex();
     $("#saveState").textContent = "已完成";
+  });
+  $("#fillExample").addEventListener("click", fillExample);
+
+  $("#quickConsultForm").addEventListener("submit", handleQuickConsult);
+  $("#consultForm").addEventListener("submit", handleConsultSubmit);
+  $("#consultForm").method.addEventListener("change", (event) => updateManualVisibility(event.currentTarget.form));
+  $("#saveConsult").addEventListener("click", saveCurrentConsultation);
+  $("#copyGuide").addEventListener("click", copyGuide);
+
+  $("#castLine").addEventListener("click", () => {
+    if (manualCast.length >= 6) return;
+    manualCast.push([6, 7, 8, 9][randomInt(4)]);
+    renderManualCast();
+  });
+
+  $("#resetCast").addEventListener("click", () => {
+    manualCast = [];
+    renderManualCast();
+  });
+
+  $("#readingPanel").addEventListener("click", (event) => {
+    const copyButton = event.target.closest("[data-copy-reading]");
+    if (copyButton) copyCurrentReading(copyButton);
+  });
+
+  $("#quickResult").addEventListener("click", (event) => {
+    if (event.target.closest("[data-open-reading]")) {
+      $("[data-view='divine']").click();
+    }
+  });
+
+  $("#baguaBoard").addEventListener("click", (event) => {
+    const tile = event.target.closest("[data-trigram]");
+    if (!tile) return;
+    selectedTrigramKey = tile.dataset.trigram;
+    renderBagua();
+  });
+
+  $("#trigramDetail").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-set-today]");
+    if (!button) return;
+    activeIndex = Number(button.dataset.setToday) - 1;
+    renderToday();
+    renderLibrary();
+    $("[data-view='today']").click();
+  });
+
+  $("#startBaguaDrill").addEventListener("click", startBaguaDrill);
+  $("#drillOptions").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-drill]");
+    if (!button) return;
+    if (button.dataset.drill === drillAnswerKey) {
+      const trigram = TRIGRAMS[drillAnswerKey];
+      $("#drillFeedback").textContent = `答对了：${trigram.name}为${trigram.image}，象${trigram.virtue}。`;
+      setTimeout(startBaguaDrill, 900);
+    } else {
+      $("#drillFeedback").textContent = "再看三条爻：阳爻是一整条，阴爻中间断开。";
+    }
   });
 
   $("#dailyChecks").addEventListener("change", (event) => {
@@ -479,7 +1104,7 @@ function bindEvents() {
     save(STORAGE.checks, state);
   });
 
-  $("#pathList").addEventListener("change", (event) => {
+  document.addEventListener("change", (event) => {
     const input = event.target.closest("[data-path]");
     if (!input) return;
     const progress = load(STORAGE.path, {});
@@ -487,23 +1112,17 @@ function bindEvents() {
     save(STORAGE.path, progress);
   });
 
-  $("#pathList").addEventListener("click", (event) => {
+  document.addEventListener("click", (event) => {
     const button = event.target.closest("[data-phase]");
     if (!button) return;
     const phaseIndex = Number(button.dataset.phase);
-    const hexId = [1, 3, 11, 49][phaseIndex] ?? 1;
+    const hexId = [1, 3, 29, 49][phaseIndex] ?? 1;
     activeIndex = hexId - 1;
     renderToday();
     $("[data-view='today']").click();
   });
 
-  $("#resetPath").addEventListener("click", () => {
-    save(STORAGE.path, {});
-    renderPath();
-  });
-
   $("#hexSearch").addEventListener("input", renderLibrary);
-
   $("#showCore").addEventListener("click", () => {
     coreOnly = !coreOnly;
     $("#showCore").textContent = coreOnly ? "显示全部64卦" : "只看核心16卦";
@@ -532,30 +1151,17 @@ function bindEvents() {
     }
   });
 
-  $("#exportJournal").addEventListener("click", () => {
-    const payload = {
-      exportedAt: new Date().toISOString(),
-      entries: load(STORAGE.entries, []),
-      studied: load(STORAGE.studied, []),
-      completedDates: load(STORAGE.completed, []),
-    };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `易学日课-${todayKey()}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
+  $$(".journal-tab").forEach((button) => {
+    button.addEventListener("click", () => {
+      $$(".journal-tab").forEach((item) => item.classList.remove("is-active"));
+      button.classList.add("is-active");
+      currentJournal = button.dataset.journal;
+      renderJournal();
+    });
   });
 
-  $("#clearJournal").addEventListener("click", () => {
-    if (!confirm("清空后，本地日志和完成记录会删除。")) return;
-    save(STORAGE.entries, []);
-    save(STORAGE.studied, []);
-    save(STORAGE.completed, []);
-    renderToday();
-    renderJournal();
-  });
+  $("#exportJournal").addEventListener("click", exportJournal);
+  $("#clearJournal").addEventListener("click", clearJournal);
 }
 
 function init() {
@@ -564,10 +1170,12 @@ function init() {
     window.history.replaceState({}, "", window.location.pathname);
   }
   renderToday();
-  renderPath();
+  renderBagua();
   renderLibrary();
   renderJournal();
   renderBooks();
+  renderManualCast();
+  updateManualVisibility();
   bindEvents();
 }
 

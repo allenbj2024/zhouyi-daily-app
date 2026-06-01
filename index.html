@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>易学日课</title>
+    <title>易学八卦问事</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -13,25 +13,29 @@
           <span></span><span></span><span></span>
         </div>
         <div>
-          <h1>易学日课</h1>
+          <h1>易学八卦问事</h1>
           <p id="todayLabel">今日</p>
         </div>
       </div>
       <nav class="tabs" aria-label="主导航">
         <button class="tab is-active" type="button" data-view="today">今日</button>
-        <button class="tab" type="button" data-view="path">路线</button>
+        <button class="tab" type="button" data-view="bagua">八卦</button>
+        <button class="tab" type="button" data-view="divine">起卦</button>
         <button class="tab" type="button" data-view="library">卦库</button>
-        <button class="tab" type="button" data-view="journal">日志</button>
+        <button class="tab" type="button" data-view="journal">记录</button>
         <button class="tab" type="button" data-view="books">版本</button>
       </nav>
     </header>
 
     <main>
       <section class="view is-active" id="view-today">
-        <div class="today-layout">
+        <section class="first-screen" aria-label="今日学习与问事入口">
           <section class="daily-panel">
             <div class="panel-heading">
-              <p class="eyebrow">今日一卦</p>
+              <div>
+                <p class="eyebrow">今日一卦</p>
+                <h2>先识时位，再定行动</h2>
+              </div>
               <div class="day-actions">
                 <button class="icon-button" type="button" id="prevHex" aria-label="上一卦" title="上一卦">‹</button>
                 <button class="icon-button" type="button" id="nextHex" aria-label="下一卦" title="下一卦">›</button>
@@ -41,11 +45,11 @@
               <div class="hex-symbol" id="dailySymbol">䷀</div>
               <div>
                 <p class="hex-number" id="dailyNumber">第1卦</p>
-                <h2 id="dailyName">乾为天</h2>
+                <h3 id="dailyName">乾为天</h3>
                 <p class="hex-theme" id="dailyTheme">刚健、创造、自强不息</p>
               </div>
             </div>
-            <div class="hex-visual" id="dailyLines" aria-label="卦画"></div>
+            <div class="hex-visual" id="dailyLines" aria-label="今日卦画"></div>
             <div class="daily-grid">
               <div>
                 <span>卦义</span>
@@ -58,37 +62,44 @@
             </div>
           </section>
 
-          <section class="practice-panel">
+          <section class="ask-panel">
             <div class="panel-heading">
-              <p class="eyebrow">知行四问</p>
-              <span class="saved-state" id="saveState">未保存</span>
+              <div>
+                <p class="eyebrow">问事工作台</p>
+                <h2>给朋友起一卦</h2>
+              </div>
+              <span class="saved-state" id="consultCount">0 条记录</span>
             </div>
-            <form id="dailyForm">
+            <form id="quickConsultForm" class="compact-form">
               <label>
-                <span>我现在处在什么时位？</span>
-                <textarea name="situation" rows="3" placeholder="写一个真实处境"></textarea>
+                <span>朋友正在问什么事？</span>
+                <textarea name="question" rows="3" placeholder="例：我是否应该接受这个新合作？"></textarea>
               </label>
               <div class="field-grid">
                 <label>
-                  <span>应行</span>
-                  <input name="act" type="text" placeholder="今天推进什么" />
+                  <span>问题类型</span>
+                  <select name="topic">
+                    <option value="事业">事业</option>
+                    <option value="关系">关系</option>
+                    <option value="选择">选择</option>
+                    <option value="修身">修身</option>
+                    <option value="其他">其他</option>
+                  </select>
                 </label>
                 <label>
-                  <span>应止</span>
-                  <input name="stop" type="text" placeholder="今天克制什么" />
+                  <span>起卦方式</span>
+                  <select name="method">
+                    <option value="time">时间起卦</option>
+                    <option value="random">随机起卦</option>
+                  </select>
                 </label>
               </div>
-              <label>
-                <span>三日后用什么结果复盘？</span>
-                <input name="review" type="text" placeholder="可观察、可验证" />
-              </label>
-              <div class="form-actions">
-                <button class="primary" type="submit">保存日课</button>
-                <button class="secondary" type="button" id="completeToday">完成今日</button>
-              </div>
+              <button class="primary" type="submit">起卦解读</button>
             </form>
+            <div class="mini-result" id="quickResult" hidden></div>
+            <p class="notice">用于传统文化学习和自我反省，不替代医疗、法律、投资等专业意见。</p>
           </section>
-        </div>
+        </section>
 
         <section class="workbench">
           <div class="metric">
@@ -100,32 +111,143 @@
             <strong id="studiedCount">0</strong>
           </div>
           <div class="metric">
-            <span>日志条数</span>
-            <strong id="entryCount">0</strong>
+            <span>解卦记录</span>
+            <strong id="consultMetric">0</strong>
           </div>
           <div class="daily-checks" id="dailyChecks"></div>
         </section>
+
+        <section class="practice-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">知行四问</p>
+              <h2>把卦义落到今天</h2>
+            </div>
+            <span class="saved-state" id="saveState">未保存</span>
+          </div>
+          <form id="dailyForm">
+            <label>
+              <span>我现在处在什么时位？</span>
+              <textarea name="situation" rows="3" placeholder="写一个真实处境"></textarea>
+              <small>先写事实，再判断自己是在进、守、退、变中的哪一位。</small>
+            </label>
+            <div class="field-grid">
+              <label>
+                <span>应行</span>
+                <input name="act" type="text" placeholder="今天推进什么" />
+                <small>今天做一个可执行动作。</small>
+              </label>
+              <label>
+                <span>应止</span>
+                <input name="stop" type="text" placeholder="今天克制什么" />
+                <small>今天停止一个惯性反应。</small>
+              </label>
+            </div>
+            <label>
+              <span>三日后用什么结果复盘？</span>
+              <input name="review" type="text" placeholder="可观察、可验证" />
+              <small>让行动可以被复盘，不停留在感受里。</small>
+            </label>
+            <div class="form-actions">
+              <button class="primary" type="submit">保存日课</button>
+              <button class="secondary" type="button" id="completeToday">完成今日</button>
+              <button class="secondary" type="button" id="fillExample">填入示例</button>
+            </div>
+          </form>
+        </section>
       </section>
 
-      <section class="view" id="view-path">
+      <section class="view" id="view-bagua">
         <section class="section-head">
           <div>
-            <p class="eyebrow">四阶段路线</p>
-            <h2>从读懂文字，到识时行事</h2>
+            <p class="eyebrow">八卦学习</p>
+            <h2>先熟八象，再进六十四卦</h2>
           </div>
-          <button class="secondary" type="button" id="resetPath">重置路线</button>
+          <button class="secondary" type="button" id="startBaguaDrill">开始辨卦练习</button>
         </section>
-        <div class="path-list" id="pathList"></div>
+        <section class="bagua-layout">
+          <div class="bagua-board" id="baguaBoard" aria-label="八卦盘"></div>
+          <aside class="trigram-detail" id="trigramDetail"></aside>
+        </section>
+        <section class="drill-panel" id="baguaDrill" hidden>
+          <div>
+            <p class="eyebrow">辨卦练习</p>
+            <h3 id="drillPrompt">看卦画，选出它是哪一卦</h3>
+          </div>
+          <div class="drill-lines" id="drillLines"></div>
+          <div class="drill-options" id="drillOptions"></div>
+          <p class="saved-state" id="drillFeedback">选择一个答案。</p>
+        </section>
+      </section>
+
+      <section class="view" id="view-divine">
+        <section class="section-head">
+          <div>
+            <p class="eyebrow">问事起卦</p>
+            <h2>把问题写清，再看卦中进退</h2>
+          </div>
+          <button class="secondary" type="button" id="copyGuide">复制给朋友</button>
+        </section>
+        <div class="share-box" id="shareBox" hidden>
+          <label>
+            <span>给朋友的使用说明</span>
+            <textarea id="shareMessage" rows="6" readonly></textarea>
+          </label>
+        </div>
+        <section class="divine-layout">
+          <form id="consultForm" class="consult-form">
+            <label>
+              <span>问事对象</span>
+              <input name="person" type="text" placeholder="可写昵称，留空也可以" />
+            </label>
+            <label>
+              <span>问题</span>
+              <textarea name="question" rows="4" placeholder="把问题写成一句具体的话：我现在是否应该……？"></textarea>
+            </label>
+            <div class="field-grid">
+              <label>
+                <span>类型</span>
+                <select name="topic">
+                  <option value="事业">事业</option>
+                  <option value="关系">关系</option>
+                  <option value="选择">选择</option>
+                  <option value="修身">修身</option>
+                  <option value="其他">其他</option>
+                </select>
+              </label>
+              <label>
+                <span>方式</span>
+                <select name="method">
+                  <option value="time">时间起卦</option>
+                  <option value="random">随机起卦</option>
+                </select>
+              </label>
+            </div>
+            <div class="manual-cast" id="manualCast">
+              <div class="manual-lines" id="manualLines"></div>
+              <button class="secondary" type="button" id="castLine">摇一爻</button>
+              <button class="secondary" type="button" id="resetCast">重摇</button>
+            </div>
+            <div class="form-actions">
+              <button class="primary" type="submit">生成解读</button>
+              <button class="secondary" type="button" id="saveConsult">保存解卦</button>
+            </div>
+            <p class="notice">建议只问一件具体事。不要替别人做重大决定，只给他一个观察角度和可复盘行动。</p>
+          </form>
+          <section class="reading-panel" id="readingPanel">
+            <div class="empty">写下问题后生成解读。结果会显示本卦、变卦、动爻、行动建议和复盘方式。</div>
+          </section>
+        </section>
       </section>
 
       <section class="view" id="view-library">
         <section class="section-head library-head">
           <div>
-            <p class="eyebrow">六十四卦</p>
-            <h2>按象、辞、时位反复进入</h2>
+            <p class="eyebrow">六十四卦库</p>
+            <h2>按卦名、八卦、关键词检索</h2>
           </div>
           <div class="library-tools">
-            <input id="hexSearch" type="search" placeholder="搜索卦名或关键词" />
+            <input id="hexSearch" type="search" placeholder="搜索卦名、八卦或关键词" />
             <button class="secondary" type="button" id="showCore">只看核心16卦</button>
           </div>
         </section>
@@ -138,14 +260,18 @@
       <section class="view" id="view-journal">
         <section class="section-head">
           <div>
-            <p class="eyebrow">行动日志</p>
-            <h2>记录、复盘、校正判断</h2>
+            <p class="eyebrow">记录复盘</p>
+            <h2>日课与解卦都留在本机浏览器</h2>
           </div>
           <div class="journal-actions">
             <button class="secondary" type="button" id="exportJournal">导出</button>
             <button class="danger" type="button" id="clearJournal">清空</button>
           </div>
         </section>
+        <div class="journal-tabs" role="tablist" aria-label="记录类型">
+          <button class="journal-tab is-active" type="button" data-journal="daily">日课日志</button>
+          <button class="journal-tab" type="button" data-journal="consult">解卦记录</button>
+        </div>
         <div class="journal-list" id="journalList"></div>
       </section>
 
