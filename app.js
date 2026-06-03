@@ -458,6 +458,20 @@ function fillExample() {
   form.situation.focus();
 }
 
+async function copyXhsHandle() {
+  const button = $("#copyXhs");
+  const handle = $("#xhsHandle").textContent.trim();
+  try {
+    await navigator.clipboard.writeText(handle);
+    button.textContent = "已复制";
+  } catch {
+    button.textContent = handle;
+  }
+  setTimeout(() => {
+    button.textContent = "复制账号";
+  }, 1600);
+}
+
 function streakCount() {
   const completed = new Set(load(STORAGE.completed, []));
   let count = 0;
@@ -1005,6 +1019,7 @@ function bindEvents() {
     $("#saveState").textContent = "已完成";
   });
   $("#fillExample").addEventListener("click", fillExample);
+  $("#copyXhs").addEventListener("click", copyXhsHandle);
 
   $("#quickConsultForm").addEventListener("submit", handleQuickConsult);
   $("#consultForm").addEventListener("submit", handleConsultSubmit);

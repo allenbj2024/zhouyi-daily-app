@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>易学八卦自占</title>
+    <meta name="theme-color" content="#26251f" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -16,6 +17,10 @@
           <h1>易学八卦自占</h1>
           <p id="todayLabel">今日</p>
         </div>
+      </div>
+      <div class="header-signature" aria-label="作者信息">
+        <span>小红书</span>
+        <strong>silicongravi_ai</strong>
       </div>
       <nav class="tabs" aria-label="主导航">
         <button class="tab is-active" type="button" data-view="today">今日</button>
@@ -33,8 +38,8 @@
           <section class="daily-panel">
             <div class="panel-heading">
               <div>
-                <p class="eyebrow">今日一卦</p>
-                <h2>先识时位，再定行动</h2>
+                <p class="eyebrow">今日主修</p>
+                <h2>读一卦，定一事</h2>
               </div>
               <div class="day-actions">
                 <button class="icon-button" type="button" id="prevHex" aria-label="上一卦" title="上一卦">‹</button>
@@ -65,8 +70,8 @@
           <section class="ask-panel">
             <div class="panel-heading">
               <div>
-                <p class="eyebrow">问事工作台</p>
-                <h2>自己起一卦</h2>
+                <p class="eyebrow">核心入口</p>
+                <h2>起卦自占</h2>
               </div>
               <span class="saved-state" id="consultCount">0 条记录</span>
             </div>
@@ -94,27 +99,11 @@
                   </select>
                 </label>
               </div>
-              <button class="primary" type="submit">起卦解读</button>
+              <button class="primary" type="submit">立即起卦</button>
             </form>
             <div class="mini-result" id="quickResult" hidden></div>
             <p class="notice">用于传统文化学习和自我反省，不替代医疗、法律、投资等专业意见。</p>
           </section>
-        </section>
-
-        <section class="workbench">
-          <div class="metric">
-            <span>连续日课</span>
-            <strong id="streakCount">0</strong>
-          </div>
-          <div class="metric">
-            <span>已读卦数</span>
-            <strong id="studiedCount">0</strong>
-          </div>
-          <div class="metric">
-            <span>解卦记录</span>
-            <strong id="consultMetric">0</strong>
-          </div>
-          <div class="daily-checks" id="dailyChecks"></div>
         </section>
 
         <section class="practice-panel">
@@ -154,6 +143,22 @@
               <button class="secondary" type="button" id="fillExample">填入示例</button>
             </div>
           </form>
+        </section>
+
+        <section class="workbench">
+          <div class="metric">
+            <span>连续日课</span>
+            <strong id="streakCount">0</strong>
+          </div>
+          <div class="metric">
+            <span>已读卦数</span>
+            <strong id="studiedCount">0</strong>
+          </div>
+          <div class="metric">
+            <span>解卦记录</span>
+            <strong id="consultMetric">0</strong>
+          </div>
+          <div class="daily-checks" id="dailyChecks"></div>
         </section>
       </section>
 
@@ -278,6 +283,25 @@
         </section>
         <div class="book-grid" id="bookGrid"></div>
       </section>
+
+      <footer class="creator-card" aria-label="作者小红书">
+        <div class="creator-profile">
+          <img src="./assets/xiaohongshu-avatar.jpg?v=focus-ui" alt="A.I. Allen 头像" />
+          <div>
+            <p class="eyebrow">作者小红书</p>
+            <h2>A.I. Allen</h2>
+            <p>AI实践者，记录工具、Agent、工作流实测，也把真实用法拆给你看。</p>
+            <div class="creator-actions">
+              <span>小红书号：<strong id="xhsHandle">silicongravi_ai</strong></span>
+              <button class="secondary" type="button" id="copyXhs">复制账号</button>
+            </div>
+          </div>
+        </div>
+        <div class="creator-qr">
+          <img src="./assets/xiaohongshu-qr.jpg?v=focus-ui" alt="小红书二维码" />
+          <span>扫码在小红书找到我</span>
+        </div>
+      </footer>
     </main>
 
     <script src="./app.js"></script>
