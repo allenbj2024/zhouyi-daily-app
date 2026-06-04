@@ -316,6 +316,7 @@ let drillAnswerKey = null;
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+const field = (form, name) => form.elements.namedItem(name);
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -777,7 +778,7 @@ function buildConsultation(form) {
   const person = form.person?.value.trim() ?? "";
   const question = form.question.value.trim() || "未写明的问题";
   const topic = form.topic.value;
-  const method = form.method.value;
+  const method = field(form, "method").value;
   const cast = method === "time" ? castByTime({ question, topic, person }) : castByRandom();
   const hex = findHexByLines(cast.lines);
   const changed = findHexByLines(cast.changedLines);
@@ -942,7 +943,7 @@ function renderManualCast() {
 }
 
 function updateManualVisibility(form = $("#consultForm")) {
-  $("#manualCast").hidden = form.method.value !== "random";
+  $("#manualCast").hidden = field(form, "method").value !== "random";
 }
 
 function handleConsultSubmit(event) {
@@ -1023,7 +1024,7 @@ function bindEvents() {
 
   $("#quickConsultForm").addEventListener("submit", handleQuickConsult);
   $("#consultForm").addEventListener("submit", handleConsultSubmit);
-  $("#consultForm").method.addEventListener("change", (event) => updateManualVisibility(event.currentTarget.form));
+  field($("#consultForm"), "method").addEventListener("change", (event) => updateManualVisibility(event.currentTarget.form));
   $("#saveConsult").addEventListener("click", saveCurrentConsultation);
 
   $("#castLine").addEventListener("click", () => {
